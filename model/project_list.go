@@ -5,5 +5,6 @@ type Project struct {
 	ProjectName   string        `json:"projectName"`
 	ProjectSource string        `json:"projectSource"`
 	ProjectAmount string        `json:"projectAmount"`
+	ProjectWinner string        `json:"projectWinner"`
 	Participants  []Participant `json:"participant"`
 }

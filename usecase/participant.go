@@ -1,4 +1,4 @@
-package controller
+package usecase
 
 import (
 	"fmt"
@@ -9,18 +9,8 @@ import (
 	utils "github.com/fajritsaniy/lpse-screening/utils"
 )
 
-func ParticipantList(sessionID string, project model.Project) {
-
-	fmt.Println("==========================================")
-	fmt.Println("Project ID : ", project.ProjectID)
-	fmt.Println("Project Name : ", project.ProjectName)
-	fmt.Println("Project Source : ", project.ProjectSource)
-	fmt.Println("Project Amount : ", project.ProjectAmount)
-	fmt.Println("==========================================")
-	fmt.Println()
-	fmt.Println("Participant: ")
-	fmt.Println()
-
+func ParticipantList(sessionID string, project model.Project) []model.Participant {
+	var participants []model.Participant
 	url := fmt.Sprintf("https://lpse.pu.go.id/eproc4/lelang/%s/peserta", project.ProjectID)
 
 	// Create a map for headers
@@ -36,7 +26,7 @@ func ParticipantList(sessionID string, project model.Project) {
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		fmt.Println("Error creating request:", err)
-		return
+		return nil
 	}
 
 	// Set the headers
@@ -51,7 +41,7 @@ func ParticipantList(sessionID string, project model.Project) {
 	resp, err := client.Do(req)
 	if err != nil {
 		fmt.Println("Error sending request:", err)
-		return
+		return nil
 	}
 	defer resp.Body.Close()
 
@@ -59,18 +49,22 @@ func ParticipantList(sessionID string, project model.Project) {
 	htmlContent, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		fmt.Println("Error reading response body:", err)
-		return
+		return nil
 	}
 
 	rows := utils.ExtractTableData(string(htmlContent))
 	for n := 0; n < len(rows); n++ {
 		if n == 0 {
 			continue
+		} else if n > len(rows) {
+			participant := model.NewParticipant(n, "", "", "", "")
+			participants = append(participants, *participant)
+		} else if n > 10 {
+			break
+		} else {
+			participant := model.NewParticipant(n, utils.RemoveExtraSpaces(rows[n][1]), rows[n][2], rows[n][3], rows[n][4])
+			participants = append(participants, *participant)
 		}
-		fmt.Println("Nama Peserta : ", utils.RemoveExtraSpaces(rows[n][1]))
-		fmt.Println("NPWP : ", rows[n][2])
-		fmt.Println("Harga Penawaran : ", rows[n][3])
-		fmt.Println("Harga Terkoreksi : ", rows[n][4])
-		fmt.Println()
 	}
+	return participants
 }

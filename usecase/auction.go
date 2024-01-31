@@ -1,9 +1,10 @@
-package controller
+package usecase
 
 import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"os"
 	"regexp"
 	"strings"
 
@@ -74,6 +75,7 @@ func AuctionList(sessionID string, searchKey string) []model.Project {
 	err = json.NewDecoder(resp.Body).Decode(&response)
 	if err != nil {
 		fmt.Println("Please check your Session ID")
+		os.Exit(1)
 		return nil
 	}
 
