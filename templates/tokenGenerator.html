@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{{.Title}}</title>
+    <link rel="icon" href="/static/y_icon.png" type="image/png" />
+    <link rel="stylesheet" type="text/css" href="/static/style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>{{.Title}}</h1>
+      <form id="apiForm" method="post" action="/generate">
+        <label for="sessionID">Session ID:</label>
+        <input type="text" id="sessionID" name="sessionID" required />
+        <button type="submit">Generate</button>
+      </form>
+      <p id="apiResult"></p>
+
+      <!-- Additional buttons -->
+      <button type="button" onclick="redirectToRoot()">Home</button>
+    </div>
+    <!-- Copyright notice -->
+    <div class="copyright-notice">
+      &copy; 2024 Copyright by Yuwingo. All rights reserved.
+    </div>
+    <script src="/static/script.js"></script>
+    <script>
+      function redirectToRoot() {
+        window.location.href = "/";
+      }
+    </script>
+  </body>
+</html>

@@ -4,12 +4,26 @@ import (
 	"encoding/csv"
 	"encoding/json"
 	"fmt"
-	"os"
+	"net/http"
+	"time"
 
 	"github.com/fajritsaniy/lpse-screening/model"
 )
 
-func JSONToCSV(jsonData string) {
+func JSONToCSV(w http.ResponseWriter, jsonData string, searchInput string) {
+	currentTime := time.Now()
+
+	// Format the current date as a string in "2006-01-02" format (Year, Month, Day)
+	currentDateString := currentTime.Format("2006-01-02")
+
+	fileName := fmt.Sprintf("Project List - %s - %s", searchInput, currentDateString)
+	contentDisposition := "attachment;filename=" + fileName + ".csv"
+
+	// Set Content-Type header to text/csv
+	w.Header().Set("Content-Type", "text/csv")
+	// Set Content-Disposition header to trigger download with the filename "empty.csv"
+	w.Header().Set("Content-Disposition", contentDisposition)
+
 	// Unmarshal JSON data into Project struct
 	var projects []model.Project
 	err := json.Unmarshal([]byte(jsonData), &projects)
@@ -18,16 +32,8 @@ func JSONToCSV(jsonData string) {
 		return
 	}
 
-	// Create a CSV file
-	file, err := os.Create("output.csv")
-	if err != nil {
-		fmt.Println("Error creating CSV file:", err)
-		return
-	}
-	defer file.Close()
-
 	// Create a CSV writer
-	writer := csv.NewWriter(file)
+	writer := csv.NewWriter(w)
 	defer writer.Flush()
 
 	// Write header row

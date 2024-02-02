@@ -1,26 +1,15 @@
 package controller
 
 import (
-	"bufio"
 	"encoding/json"
-	"fmt"
-	"log"
-	"os"
+	"net/http"
 
 	"github.com/fajritsaniy/lpse-screening/usecase"
 	"github.com/fajritsaniy/lpse-screening/utils"
 )
 
-func FindProjectParticipant(sessionID string) {
-	fmt.Print("Masukkan Keyword: ")
-	scanner := bufio.NewScanner(os.Stdin)
-	scanner.Scan()
-	err := scanner.Err()
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	auctionList := usecase.AuctionList(sessionID, scanner.Text())
+func FindProjectParticipant(w http.ResponseWriter, sessionID string, searchInput string) {
+	auctionList := usecase.AuctionList(sessionID, searchInput)
 	// fmt.Println(participantList)
 
 	// Iterate over the slice using range
@@ -33,5 +22,5 @@ func FindProjectParticipant(sessionID string) {
 
 	jsonAuctionList, _ := json.Marshal(auctionList)
 	// fmt.Println(string(jsonAuctionList))
-	utils.JSONToCSV(string(jsonAuctionList))
+	utils.JSONToCSV(w, string(jsonAuctionList), searchInput)
 }

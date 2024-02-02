@@ -1,9 +1,30 @@
 package main
 
-import "github.com/fajritsaniy/lpse-screening/controller"
+import (
+	"fmt"
+	"net/http"
+
+	handlers "github.com/fajritsaniy/lpse-screening/handler"
+	"github.com/gorilla/mux"
+)
 
 func main() {
-	sessionID := "SPSE_SESSION=971e4b027d0b27d239103a71a3fbff5d5822a74a-___AT=29f5f733dc9a4620c38629d3932003c6966d6302&___TS=1706716799084&___ID=60d3fb1e-8e67-403a-be68-4a6203b380ae"
+	fmt.Println("Server is starting...")
+	r := mux.NewRouter()
 
-	controller.FindProjectParticipant(sessionID)
+	// Define routes
+	r.HandleFunc("/", handlers.HomeHandler).Methods("GET")
+	r.HandleFunc("/token-generator", handlers.TokenGenerator).Methods("GET")
+	r.HandleFunc("/api", handlers.FindProjectAPIHandler).Methods("POST")
+	r.HandleFunc("/generate", handlers.GenerateTokenAPIHandler).Methods("POST")
+
+	// Serve static files
+	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
+
+	// Start the server
+	http.Handle("/", r)
+	err := http.ListenAndServe(":8080", nil)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
 }
