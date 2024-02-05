@@ -10,13 +10,13 @@ import (
 	"github.com/fajritsaniy/lpse-screening/model"
 )
 
-func JSONToCSV(w http.ResponseWriter, jsonData string, searchInput string) {
+func JSONToCSV(w http.ResponseWriter, jsonData string, searchInput string) string {
 	currentTime := time.Now()
 
 	// Format the current date as a string in "2006-01-02" format (Year, Month, Day)
-	currentDateString := currentTime.Format("2006-01-02")
+	currentDateString := currentTime.Format("2006-01-02 15:04:05")
 
-	fileName := fmt.Sprintf("Project List - %s - %s", searchInput, currentDateString)
+	fileName := fmt.Sprintf("%s - Project List - %s", searchInput, currentDateString)
 	contentDisposition := "attachment;filename=" + fileName + ".csv"
 
 	// Set Content-Type header to text/csv
@@ -29,7 +29,7 @@ func JSONToCSV(w http.ResponseWriter, jsonData string, searchInput string) {
 	err := json.Unmarshal([]byte(jsonData), &projects)
 	if err != nil {
 		fmt.Println("Error:", err)
-		return
+		return ""
 	}
 
 	// Create a CSV writer
@@ -37,17 +37,17 @@ func JSONToCSV(w http.ResponseWriter, jsonData string, searchInput string) {
 	defer writer.Flush()
 
 	// Write header row
-	header := []string{"projectID", "projectName", "projectSource", "projectAmount", "projectWinner"}
+	header := []string{"ID Proyek", "Nama", "Sumber Proyek", "Total Proyek", "Pemenang"}
 	for i := 1; i <= 10; i++ {
-		header = append(header, fmt.Sprintf("participant%d", i))
-		header = append(header, fmt.Sprintf("participant%d_npwp", i))
-		header = append(header, fmt.Sprintf("participant%d_bidPrice", i))
-		header = append(header, fmt.Sprintf("participant%d_correctedPrice", i))
+		header = append(header, fmt.Sprintf("Peserta %d", i))
+		header = append(header, fmt.Sprintf("NPWP Peserta %d", i))
+		header = append(header, fmt.Sprintf("Harga Penawaran Peserta %d", i))
+		header = append(header, fmt.Sprintf("Harga Terkoreksi Peserta %d", i))
 	}
 	err = writer.Write(header)
 	if err != nil {
 		fmt.Println("Error writing CSV header:", err)
-		return
+		return ""
 	}
 
 	// Write project and participant data for each project
@@ -59,9 +59,8 @@ func JSONToCSV(w http.ResponseWriter, jsonData string, searchInput string) {
 		err := writer.Write(projectRow)
 		if err != nil {
 			fmt.Println("Error writing project and participant data:", err)
-			return
+			return ""
 		}
 	}
-
-	fmt.Println("CSV file created successfully.")
+	return fileName
 }

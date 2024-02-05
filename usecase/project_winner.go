@@ -53,6 +53,10 @@ func ProjectWinner(sessionID string, project model.Project) string {
 	}
 
 	rows := utils.ExtractTableData(string(htmlContent))
-	projectWinner = utils.RemoveExtraSpaces(rows[6][1])
-	return projectWinner
+	if rows == nil {
+		return ""
+	} else {
+		projectWinner = utils.RemoveExtraSpaces(rows[6][1])
+		return projectWinner
+	}
 }

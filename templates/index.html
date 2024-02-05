@@ -4,10 +4,16 @@
     <title>{{.Title}}</title>
     <link rel="icon" href="/static/y_icon.png" type="image/png" />
     <link rel="stylesheet" type="text/css" href="/static/style.css" />
+    <!-- Add Font Awesome CSS (you may need to adjust the version) -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
   </head>
   <body>
     <div class="container">
-      <h1>{{.Title}}</h1>
+      <!-- Modify the h1 tag to include the icon -->
+      <h1><i class="fa-regular fa-building"></i> {{.Title}}</h1>
       <form id="apiForm" method="post" action="/api">
         <label for="sessionID">Session ID:</label>
         <input type="text" id="sessionID" name="sessionID" required />
@@ -21,6 +27,5 @@
     <div class="copyright-notice">
       &copy; 2024 Copyright by Yuwingo. All rights reserved.
     </div>
-    <script src="/static/script.js"></script>
   </body>
 </html>

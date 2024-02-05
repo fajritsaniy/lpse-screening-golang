@@ -2,6 +2,7 @@ package controller
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/fajritsaniy/lpse-screening/usecase"
@@ -22,5 +23,6 @@ func FindProjectParticipant(w http.ResponseWriter, sessionID string, searchInput
 
 	jsonAuctionList, _ := json.Marshal(auctionList)
 	// fmt.Println(string(jsonAuctionList))
-	utils.JSONToCSV(w, string(jsonAuctionList), searchInput)
+	fileName := utils.JSONToCSV(w, string(jsonAuctionList), searchInput)
+	fmt.Println(fileName, "CSV file has been generated.")
 }

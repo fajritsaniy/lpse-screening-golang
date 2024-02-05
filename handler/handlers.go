@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 
@@ -41,10 +40,6 @@ func FindProjectAPIHandler(w http.ResponseWriter, r *http.Request) {
 
 	controller.FindProjectParticipant(w, sessionIDDecrypted, searchInput)
 
-	// Print values to the console
-	fmt.Println("Search Input:", searchInput)
-
-	// controller.FindProjectParticipant(sessionID, searchInput)
 }
 
 // APIHandler handles API calls
